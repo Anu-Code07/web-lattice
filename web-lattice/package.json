@@ -1,13 +1,22 @@
 {
   "name": "web-lattice",
-  "private": false,
   "version": "0.1.0",
+  "description": "A modern TypeScript SDK for making HTTP requests with advanced features like encryption, metrics, and GraphQL support",
   "type": "module",
-  "main": "dist/index.js",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "./dist/web-lattice.umd.js",
+  "module": "./dist/web-lattice.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/web-lattice.es.js",
+      "require": "./dist/web-lattice.cjs.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "dev": "vite",
@@ -15,8 +24,21 @@
     "preview": "vite preview",
     "test": "vitest",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "format": "prettier --write \"src/**/*.{ts,tsx}\""
+    "format": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "prepublishOnly": "npm run build"
   },
+  "keywords": [
+    "http",
+    "api",
+    "sdk",
+    "typescript",
+    "axios",
+    "encryption",
+    "graphql",
+    "metrics"
+  ],
+  "author": "",
+  "license": "MIT",
   "dependencies": {
     "axios": "^1.6.7",
     "crypto-js": "^4.2.0"
@@ -34,5 +56,20 @@
     "typescript": "^5.2.2",
     "vite": "^5.1.4",
     "vitest": "^1.2.2"
-  }
+  },
+  "peerDependencies": {
+    "axios": "^1.6.7",
+    "crypto-js": "^4.2.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/web-lattice.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/web-lattice/issues"
+  },
+  "homepage": "https://github.com/yourusername/web-lattice#readme"
 }

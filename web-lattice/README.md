@@ -28,11 +28,9 @@ npm install web-lattice
 import { initWebLattice } from 'web-lattice';
 
 // Initialize the SDK
-const sdk = initWebLattice('https://api.example.com', {
-  timeout: 30000,
-  headers: {
-    'Content-Type': 'application/json'
-  }
+const sdk = initWebLattice({
+  baseUrl: 'https://api.example.com',
+  env: 'PROD'
 });
 
 // Make requests
@@ -62,27 +60,107 @@ async function example() {
 }
 ```
 
+## Complete Example
+
+Here's a comprehensive example showing how to use the SDK with all its features:
+
+```typescript
+import { initWebLattice, gql } from 'web-lattice';
+
+// Initialize SDK with all features
+const sdk = initWebLattice({
+  baseUrl: 'https://api.example.com',
+  env: 'PROD',
+  encryptionKey: 'your-secret-key',
+  timeout: 30000,
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  useRemoteKeys: true,
+  enableMetrics: true
+});
+
+// Example of a complete API interaction
+async function userManagement() {
+  try {
+    // Create a user
+    const createResponse = await sdk.post('/users', {
+      name: 'John Doe',
+      email: 'john@example.com'
+    });
+
+    if (!createResponse.success) {
+      throw new Error(createResponse.error);
+    }
+
+    const userId = createResponse.data.id;
+
+    // Get user details with GraphQL
+    const GET_USER = gql`
+      query GetUser($id: ID!) {
+        user(id: $id) {
+          id
+          name
+          email
+          profile {
+            bio
+            avatar
+          }
+        }
+      }
+    `;
+
+    const userResponse = await sdk.graphql(GET_USER, { id: userId });
+    
+    if (!userResponse.success) {
+      throw new Error(userResponse.error);
+    }
+
+    console.log('User details:', userResponse.data);
+
+    // Update user
+    const updateResponse = await sdk.put(`/users/${userId}`, {
+      name: 'John Updated',
+      email: 'john.updated@example.com'
+    });
+
+    if (!updateResponse.success) {
+      throw new Error(updateResponse.error);
+    }
+
+    console.log('User updated:', updateResponse.data);
+
+  } catch (error) {
+    console.error('Operation failed:', error);
+  }
+}
+```
+
 ## Advanced Usage
 
 ### With Environment and Encryption
 
 ```typescript
 // Production environment with encryption
-const prodSdk = initWebLattice('https://api.example.com', 'your-encryption-key', {
-  environment: 'PROD',
+const prodSdk = initWebLattice({
+  baseUrl: 'https://api.example.com',
+  env: 'PROD',
+  encryptionKey: 'your-encryption-key',
   useRemoteKeys: true,
   enableMetrics: true
 });
 
 // UAT environment without encryption
-const uatSdk = initWebLattice('https://api-uat.example.com', undefined, {
-  environment: 'UAT',
+const uatSdk = initWebLattice({
+  baseUrl: 'https://api-uat.example.com',
+  env: 'UAT',
   enableMetrics: true
 });
 
 // Development environment
-const devSdk = initWebLattice('https://api-dev.example.com', undefined, {
-  environment: 'DEV'
+const devSdk = initWebLattice({
+  baseUrl: 'https://api-dev.example.com',
+  env: 'DEV'
 });
 ```
 
@@ -122,17 +200,15 @@ if (!response.success) {
 ### Initialization
 
 ```typescript
-initWebLattice(
-  baseUrl: string,
-  encryptionKey?: string,
-  options?: {
-    timeout?: number;
-    headers?: Record<string, string>;
-    useRemoteKeys?: boolean;
-    enableMetrics?: boolean;
-    environment?: 'PROD' | 'UAT' | 'DEV';
-  }
-): WebLattice
+initWebLattice({
+  baseUrl: string;
+  env?: 'PROD' | 'UAT' | 'DEV';
+  encryptionKey?: string;
+  timeout?: number;
+  headers?: Record<string, string>;
+  useRemoteKeys?: boolean;
+  enableMetrics?: boolean;
+}): WebLattice
 ```
 
 ### Methods
@@ -147,16 +223,12 @@ initWebLattice(
 ### Configuration Options
 
 - `baseUrl`: Base URL for all requests
+- `env`: Environment setting ('PROD' | 'UAT' | 'DEV')
+- `encryptionKey`: Optional encryption key
 - `timeout`: Request timeout in milliseconds
 - `headers`: Default headers for all requests
-- `environment`: Environment setting ('PROD' | 'UAT' | 'DEV')
-- `encryption`: Encryption configuration
-  - `enabled`: Enable request/response encryption (automatically enabled in PROD)
-  - `secretKey`: Encryption key
-  - `useRemoteKeys`: Use remote key management
-- `metrics`: Metrics configuration
-  - `enabled`: Enable performance metrics
-  - `logToConsole`: Log metrics to console
+- `useRemoteKeys`: Use remote key management
+- `enableMetrics`: Enable performance metrics
 
 ## Error Handling
 

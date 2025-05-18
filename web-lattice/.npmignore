@@ -1,0 +1,34 @@
+# Development files
+.vscode/
+.idea/
+*.log
+*.tsbuildinfo
+
+# Source files
+src/
+tests/
+__tests__/
+*.test.ts
+*.spec.ts
+
+# Configuration files
+.eslintrc*
+.prettierrc*
+.gitignore
+.editorconfig
+tsconfig*.json
+vite.config.ts
+
+# Build files
+dist/*.map
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Misc
+.DS_Store
+*.swp
+*.swo 

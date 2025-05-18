@@ -503,32 +503,30 @@ export function gql(strings: TemplateStringsArray, ...values: any[]): string {
   }, "");
 }
 
-export function initWebLattice(
-  baseUrl: string,
-  encryptionKey?: string,
-  options?: {
-    timeout?: number;
-    headers?: Record<string, string>;
-    useRemoteKeys?: boolean;
-    enableMetrics?: boolean;
-    environment?: Environment;
-  }
-): WebLattice {
-  const config: NetworkConfig = {
-    baseUrl,
-    timeout: options?.timeout || 10000,
-    headers: options?.headers,
-    environment: options?.environment || 'DEV',
+export function initWebLattice(config: {
+  baseUrl: string;
+  env?: Environment;
+  encryptionKey?: string;
+  timeout?: number;
+  headers?: Record<string, string>;
+  useRemoteKeys?: boolean;
+  enableMetrics?: boolean;
+}): WebLattice {
+  const sdkConfig: NetworkConfig = {
+    baseUrl: config.baseUrl,
+    timeout: config.timeout || 10000,
+    headers: config.headers,
+    environment: config.env || 'DEV',
     encryption: {
-      enabled: !!encryptionKey,
-      secretKey: encryptionKey || "",
-      useRemoteKeys: options?.useRemoteKeys || false,
+      enabled: !!config.encryptionKey,
+      secretKey: config.encryptionKey || "",
+      useRemoteKeys: config.useRemoteKeys || false,
     },
     metrics: {
-      enabled: options?.enableMetrics !== false,
+      enabled: config.enableMetrics !== false,
       logToConsole: true,
     },
   };
 
-  return new WebLattice(config);
+  return new WebLattice(sdkConfig);
 }
