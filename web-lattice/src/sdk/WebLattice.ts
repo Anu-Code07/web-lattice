@@ -186,6 +186,7 @@ export class WebLattice {
           if (isProd(this.config)) {
             const keys = requestKeys.get(response.config);
             if (keys) {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const { aesKey, iv } = keys;
               if (response.data && typeof response.data === "string") {
                 const decryptedData = decryptData(response.data);
@@ -230,16 +231,14 @@ export class WebLattice {
           if (isProd(this.config) && error.response?.data && error.config) {
             const keys = requestKeys.get(error.config);
             if (keys) {
+              // eslint-disable-next-line @typescript-eslint/no-unused-vars
               const { aesKey, iv } = keys;
               if (typeof error.response.data === "string") {
                 const decryptedData = decryptData(error.response.data);
                 try {
                   error.response.data = JSON.parse(decryptedData);
                 } catch (parseError) {
-                  console.error(
-                    "Error parsing decrypted error JSON:",
-                    parseError
-                  );
+                  console.error("Error parsing decrypted error JSON:", parseError);
                 }
               }
             }
